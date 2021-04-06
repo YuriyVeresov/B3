@@ -2,6 +2,7 @@ package com.javacourse.stack.extremum;
 
 import com.javacourse.stack.ArrayStack;
 import com.javacourse.stack.ExtremumStack;
+import com.javacourse.stack.Stack;
 import com.javacourse.stack.stack.IntegerStackProvider;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -73,5 +74,13 @@ public interface MaxTest extends ExtremumStackProvider {
 		stack.push(1);
 		stack.push(0);
 		assertThat(stack.max()).isEqualTo(7);
+	}
+
+	@Test
+	@DisplayName("max() на пустом стеке приводит к исключению")
+	default void maxOnEmptyStack() {
+		ExtremumStack<Integer> stack = getExtremumStackImpl();
+		RuntimeException exc = assertThrows(RuntimeException.class, stack::max);
+		assertThat(exc).hasMessage("Empty Stack Exception");
 	}
 }

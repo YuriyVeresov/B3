@@ -72,4 +72,12 @@ public interface MinTest extends ExtremumStackProvider {
 		stack.push(0);
 		assertThat(stack.min()).isEqualTo(0);
 	}
+
+	@Test
+	@DisplayName("min() на пустом стеке приводит к исключению")
+	default void minOnEmptyStack() {
+		ExtremumStack<Integer> stack = getExtremumStackImpl();
+		RuntimeException exc = assertThrows(RuntimeException.class, stack::min);
+		assertThat(exc).hasMessage("Empty Stack Exception");
+	}
 }
