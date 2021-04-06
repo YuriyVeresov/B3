@@ -6,6 +6,13 @@ package com.javacourse.stack;
  */
 public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 
+	/**
+	 * Конструктор без аргументов должен создаавать валидный стек
+	 */
+	public ArrayStack() {
+
+	}
+
 	@Override
 	public void push(ItemTypeT item) {
 		// TODO: замените тело метода на полноценную реализацию
