@@ -33,7 +33,7 @@ public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 	@Override
 	public ItemTypeT pop() {
 		if (isEmpty()) {
-			throw new RuntimeException("\"Empty Stack Exception\"");
+			throw new RuntimeException("Empty Stack Exception");
 		}
 		return values[currentSize--];
 	}
@@ -41,7 +41,7 @@ public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 	@Override
 	public ItemTypeT peek() {
 		if (isEmpty()) {
-			throw new RuntimeException("\"Empty Stack Exception\"");
+			throw new RuntimeException("Empty Stack Exception");
 		}
 		return values[currentSize];
 	}
@@ -86,6 +86,7 @@ public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 		 * push only those values that are less than the previous ones
 		 */
 		private void pushMin(ItemTypeT item) {
+
 			if (!minValues.isEmpty() && minValues.peek().compareTo(item) < 0) {
 				item = minValues.peek();
 			}
@@ -97,6 +98,9 @@ public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 
 		@Override
 		public ItemTypeT min() {
+			if (isEmpty()) {
+				throw new RuntimeException("Empty Stack Exception");
+			}
 			ItemTypeT minimum = minValues.peek();
 			if (!super.isEmpty() && minimum == peek()) {
 				minValues.pop();
@@ -107,6 +111,9 @@ public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 
 		@Override
 		public ItemTypeT max() {
+			if (isEmpty()) {
+				throw new RuntimeException("Empty Stack Exception");
+			}
 			ItemTypeT maximum = maxValues.peek();
 			if (!maxValues.isEmpty() && maximum == peek()) {
 				maxValues.pop();
@@ -124,8 +131,6 @@ public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
 
 		@Override
 		public ItemTypeT pop() {
-			min();
-			max();
 			return super.pop();
 		}
 	}
