@@ -1,130 +1,98 @@
 package com.javacourse.stack;
-
+import java.lang.reflect.Array;
 import java.util.Arrays;
+import java.util.Stack;
 
 /**
  * Реализация стека на базе массива объектов,
  * с возвомжностью поиска наименьшего/наибольшего значения
  */
-public class ArrayStack<ItemTypeT> implements ExtremumStack<ItemTypeT> {
+public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements ExtremumStack<ItemTypeT> {
     private static final int DEFAULT_CAPACITY = 10;
     private ItemTypeT[] values;
-    private int currentSize;
-    private int size;
+    private int size = -1;
+    private Stack<ItemTypeT> maxValues;
+    private Stack<ItemTypeT> minValues;
 
     /**
      * Конструктор без аргументов должен создаавать валидный стек
      */
     public ArrayStack() {
-        this.values = (ItemTypeT[]) new Object[DEFAULT_CAPACITY];
-        this.currentSize = -1;
-        this.size = values.length;
+        this.maxValues = new Stack<>();
+        this.minValues = new Stack<>();
     }
 
     @Override
     public void push(ItemTypeT item) {
-        if (size - currentSize == 1) {
-            values = Arrays.copyOf(values, (int) (size * 1.5) + 1);
-            size = values.length;
+        if (isEmpty()) {
+            this.maxValues.push(item);
+            this.minValues.push(item);
+            this.values = (ItemTypeT[]) Array.newInstance(item.getClass(), DEFAULT_CAPACITY);
         }
-        values[++currentSize] = item;
+        size++;
+        if (size == values.length) increaseCapacity();
+        values[size] = item;
+
+        if (this.size == 0) return;
+        pushOnlyMinValues(item);
+        pushOnlyMaxValues(item);
+    }
+
+    /**
+     * пушим все встречающиеся максы
+     */
+    private void pushOnlyMaxValues(ItemTypeT item) {
+        if (item != null && maxValues.peek().compareTo(item) <= 0) {
+            maxValues.push(item);
+        }
+    }
+
+    /**
+     * пушим все встречающиеся минимумы
+     */
+    private void pushOnlyMinValues(ItemTypeT item) {
+        if (item != null && minValues.peek().compareTo(item) >= 0) {
+            minValues.push(item);
+        }
     }
 
     @Override
     public ItemTypeT pop() {
-        if (isEmpty()) {
-            throw new RuntimeException("Empty Stack Exception");
-        }
-        return values[currentSize--];
+        if (isEmpty()) throw new RuntimeException("Empty Stack Exception");
+        ItemTypeT top = values[size];
+        values[size--] = null;
+        if (top == maxValues.peek()) maxValues.pop();
+        if (top == minValues.peek()) minValues.pop();
+        return top;
     }
 
     @Override
     public ItemTypeT peek() {
-        if (isEmpty()) {
-            throw new RuntimeException("Empty Stack Exception");
-        }
-        return values[currentSize];
+        if (isEmpty()) throw new RuntimeException("Empty Stack Exception");
+        return values[size];
     }
 
     @Override
     public ItemTypeT min() {
-        return (ItemTypeT) new MinAndMax<>().min();
+        if (isEmpty()) throw new RuntimeException("Empty Stack Exception");
+        return this.minValues.peek();
     }
 
     @Override
     public ItemTypeT max() {
-        return (ItemTypeT) new MinAndMax<>().max();
+        if (isEmpty()) throw new RuntimeException("Empty Stack Exception");
+        return this.maxValues.peek();
     }
 
     public boolean isEmpty() {
-        return currentSize == -1;
+        return size == -1;
     }
 
-    public static class MinAndMax<ItemTypeT extends Comparable<ItemTypeT>> extends ArrayStack<ItemTypeT> {
-        private ArrayStack<ItemTypeT> maxValues;
-        private ArrayStack<ItemTypeT> minValues;
-
-        public MinAndMax() {
-            this.maxValues = new ArrayStack<>();
-            this.minValues = new ArrayStack<>();
-        }
-
-        /**
-         * push only those values, that are greater than previous ones
-         */
-        private void pushMax(ItemTypeT item) {
-            if (!maxValues.isEmpty() && maxValues.peek().compareTo(item) > 0) {
-                item = maxValues.pop();
-            }
-            maxValues.push(item);
-        }
-
-        /**
-         * push only those values that are less than the previous ones
-         */
-        private void pushMin(ItemTypeT item) {
-            if (!minValues.isEmpty() && minValues.peek().compareTo(item) < 0) {
-                item = minValues.pop();
-            }
-            minValues.push(item);
-        }
-
-        @Override
-        public ItemTypeT min() {
-            if (isEmpty()) {
-                throw new RuntimeException("Empty Stack Exception");
-            }
-            ItemTypeT minimum = minValues.peek();
-            if (!super.isEmpty() && minimum == peek()) {
-                minValues.pop();
-                minimum = peek();
-            }
-            return minimum;
-        }
-
-        @Override
-        public ItemTypeT max() {
-            if (isEmpty()) {
-                throw new RuntimeException("Empty Stack Exception");
-            }
-            ItemTypeT maximum = maxValues.peek();
-            if (!maxValues.isEmpty() && maximum == peek()) {
-                maxValues.pop();
-                maximum = peek();
-            }
-            return maximum;
-        }
-
-        @Override
-        public void push(ItemTypeT item) {
-            super.push(item);
-            pushMax(item);
-            pushMin(item);
-        }
-
-        @Override
-        public ItemTypeT pop() {
-            return super.pop();
-        }
+    /**
+     * увеличиваем размер стека
+     */
+    private void increaseCapacity() {
+        int newSize = size + (int) (size * 1.5) + 1;
+        values = Arrays.copyOf(values, newSize);
     }
 }
