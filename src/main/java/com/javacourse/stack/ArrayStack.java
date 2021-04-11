@@ -1,7 +1,7 @@
 package com.javacourse.stack;
 import java.lang.reflect.Array;
 import java.util.Arrays;
-import java.util.Stack;
+
 
 /**
  * Реализация стека на базе массива объектов,
@@ -11,15 +11,15 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
     private static final int DEFAULT_CAPACITY = 10;
     private ItemTypeT[] values;
     private int size = -1;
-    private Stack<ItemTypeT> maxValues;
-    private Stack<ItemTypeT> minValues;
+    private MaxStack<ItemTypeT> maxValues;
+    private MinStack<ItemTypeT> minValues;
 
     /**
      * Конструктор без аргументов должен создаавать валидный стек
      */
     public ArrayStack() {
-        this.maxValues = new Stack<>();
-        this.minValues = new Stack<>();
+        this.maxValues = new MaxStack<>();
+        this.minValues = new MinStack<>();
     }
 
     @Override
