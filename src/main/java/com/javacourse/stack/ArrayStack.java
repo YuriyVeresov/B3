@@ -32,7 +32,6 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
         size++;
         if (size == values.length) increaseCapacity();
         values[size] = item;
-
         if (this.size == 0) return;
         pushOnlyMinValues(item);
         pushOnlyMaxValues(item);
