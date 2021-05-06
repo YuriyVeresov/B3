@@ -3,30 +3,42 @@ package com.javacourse.stack;
 import java.lang.reflect.Array;
 import java.util.Arrays;
 
-public class MaxStack<ItemTypeT> implements Stack<ItemTypeT>{
+public class MaxStack<ItemTypeT> implements Stack<ItemTypeT> {
     private static final int DEFAULT_CAPACITY = 10;
-    private ItemTypeT[] values;
+    private ItemTypeT[] valuesMax;
     private int size = 0;
+
+    public ItemTypeT[] getValuesMax() {
+        return valuesMax;
+    }
+
+    public void setValuesMax(ItemTypeT[] valuesMax) {
+        this.valuesMax = valuesMax;
+    }
+
+    public int getSize() {
+        return size;
+    }
 
     @Override
     public void push(ItemTypeT item) {
         if (size == 0) {
-            this.values = (ItemTypeT[]) Array.newInstance(item.getClass(), DEFAULT_CAPACITY);
+            this.valuesMax = (ItemTypeT[]) Array.newInstance(item.getClass(), DEFAULT_CAPACITY);
         }
-        if (size == values.length) increaseCapacity();
-        values[size++] = item;
+        if (size == valuesMax.length) increaseCapacity();
+        valuesMax[size++] = item;
     }
 
     @Override
     public ItemTypeT pop() {
-        ItemTypeT top = values[--size];
-        values[size] = null;
+        ItemTypeT top = valuesMax[--size];
+        valuesMax[size] = null;
         return top;
     }
 
     @Override
     public ItemTypeT peek() {
-        return values[size - 1];
+        return valuesMax[size - 1];
     }
 
 
@@ -34,8 +46,8 @@ public class MaxStack<ItemTypeT> implements Stack<ItemTypeT>{
      * метод для увеличения ёмкости стека
      */
     private void increaseCapacity() {
-        int newSize = size + (int) (size * 1.5) + 1;
-        values = Arrays.copyOf(values, newSize);
+        int newSize = (int) (size * 1.5) + 1;
+        valuesMax = Arrays.copyOf(valuesMax, newSize);
     }
 }
 

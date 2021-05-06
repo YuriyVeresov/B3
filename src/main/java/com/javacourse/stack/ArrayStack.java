@@ -1,7 +1,7 @@
 package com.javacourse.stack;
+
 import java.lang.reflect.Array;
 import java.util.Arrays;
-
 
 /**
  * Реализация стека на базе массива объектов,
@@ -13,6 +13,7 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
     private int size = -1;
     private MaxStack<ItemTypeT> maxValues;
     private MinStack<ItemTypeT> minValues;
+
 
     /**
      * Конструктор без аргументов должен создаавать валидный стек
@@ -30,7 +31,9 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
             this.values = (ItemTypeT[]) Array.newInstance(item.getClass(), DEFAULT_CAPACITY);
         }
         size++;
-        if (size == values.length) increaseCapacity();
+        if (size == values.length) {
+            increaseCapacity();
+        }
         values[size] = item;
         if (this.size == 0) return;
         pushOnlyMinValues(item);
@@ -91,7 +94,13 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
      * увеличиваем размер стека
      */
     private void increaseCapacity() {
-        int newSize = size + (int) (size * 1.5) + 1;
+        int newSize = (int) (size * 1.5) + 1;
         values = Arrays.copyOf(values, newSize);
+    }
+
+    public void trim() {
+        values = Arrays.copyOfRange(values, 0, size + 1);
+        minValues.setValuesMin(Arrays.copyOfRange(minValues.getValuesMin(), 0, minValues.getSize() + 1));
+        maxValues.setValuesMax(Arrays.copyOfRange(maxValues.getValuesMax(), 0, maxValues.getSize() + 1));
     }
 }
