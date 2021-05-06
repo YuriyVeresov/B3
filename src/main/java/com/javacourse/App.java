@@ -18,6 +18,5 @@ public class App {
         while (!stack.isEmpty()) {
             stack.pop();
         }
-
     }
 }
