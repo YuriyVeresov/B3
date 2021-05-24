@@ -14,6 +14,9 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
     private MaxStack<ItemTypeT> maxValues;
     private MinStack<ItemTypeT> minValues;
 
+    public ItemTypeT[] getValues() {
+        return values;
+    }
 
     /**
      * Конструктор без аргументов должен создаавать валидный стек
@@ -35,7 +38,7 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
             increaseCapacity();
         }
         values[size] = item;
-        if (this.size == 0) return;
+        if (size == 0) return;
         pushOnlyMinValues(item);
         pushOnlyMaxValues(item);
     }
@@ -63,8 +66,14 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
         if (isEmpty()) throw new RuntimeException("Empty Stack Exception");
         ItemTypeT top = values[size];
         values[size--] = null;
+
         if (top == maxValues.peek()) maxValues.pop();
         if (top == minValues.peek()) minValues.pop();
+
+        int countNullValues = values.length - size; //свободные ячейки (null значения)
+        if (countNullValues > values.length * 0.5) {
+            trim();
+        }
         return top;
     }
 
@@ -91,15 +100,18 @@ public class ArrayStack<ItemTypeT extends Comparable<ItemTypeT>> implements Extr
     }
 
     /**
-     * увеличиваем размер стека
+     * увеличивает размер стека
      */
     private void increaseCapacity() {
         int newSize = (int) (size * 1.5) + 1;
         values = Arrays.copyOf(values, newSize);
     }
 
-    public void trim() {
-        values = Arrays.copyOfRange(values, 0, size + 1);
+    /**
+     * обрезает null- значения в массиве
+     */
+    private void trim() {
+        values = Arrays.copyOfRange(values, 0, size + DEFAULT_CAPACITY);
         minValues.setValuesMin(Arrays.copyOfRange(minValues.getValuesMin(), 0, minValues.getSize() + 1));
         maxValues.setValuesMax(Arrays.copyOfRange(maxValues.getValuesMax(), 0, maxValues.getSize() + 1));
     }
